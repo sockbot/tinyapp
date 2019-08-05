@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/sockbot/tinyapp/issues"
   },
-  "homepage": "https://github.com/sockbot/tinyapp#readme"
+  "homepage": "https://github.com/sockbot/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }

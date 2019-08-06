@@ -6,7 +6,7 @@ const generateRandomString = function (numChars) {
     const randomChar = allowedChars[randomNum];
     randomStr += randomChar;
   }
-  console.log(randomStr);
+  // console.log(randomStr);
   return randomStr;
 }
 

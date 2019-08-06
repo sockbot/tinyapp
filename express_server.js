@@ -16,14 +16,21 @@ app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
+// app.get('/u/:shortURL', (req, res) => {
+//   const longURL = req.body;
+//   res.redirect(longURL);
+// })
+
 app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase}
   res.render('urls_index.ejs', templateVars);
 })
 
 app.post('/urls', (req, res) => {
-  console.log(req.body);
-  res.send(generateRandomString(6))
+  const randomStr = generateRandomString(6);
+  urlDatabase[randomStr] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${randomStr}`)
 })
 
 app.get('/urls/new', (req, res) => {

@@ -3,8 +3,10 @@ const { generateRandomString } = require('./generateRandomString');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 app.use(bodyParser.urlencoded( { extender: true } ));
+app.use(morgan('dev'));
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
@@ -47,6 +49,11 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render('urls_show', templateVars);
+})
+
+app.post('/urls/:shortURL', (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.longURL;
+  res.redirect('/urls')
 })
 
 app.get('/urls.json', (req, res) => {

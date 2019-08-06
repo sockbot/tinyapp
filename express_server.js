@@ -6,14 +6,14 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-app.use(bodyParser.urlencoded( { extender: true } ));
+app.use(bodyParser.urlencoded({ extender: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 let templateVars = {
   
-}
+};
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -26,55 +26,55 @@ app.get('/u/:shortURL', (req, res) => {
   // console.log(req.params);
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
-})
+});
 
 app.get('/urls/:shortURL', (req, res) => {
-  let templateVars = { 
-    shortURL: req.params.shortURL, 
+  let templateVars = {
+    shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
     username: req.cookies.username
   };
   res.render('urls_show', templateVars);
-})
+});
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
-})
+});
 
 // BROWSE
 app.get('/urls', (req, res) => {
-  let templateVars = { 
+  let templateVars = {
     urls: urlDatabase,
     username: req.cookies.username
-  }
+  };
   res.render('urls_index.ejs', templateVars);
-})
+});
 
 // ADD
 app.post('/urls/:shortURL', (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
-  res.redirect('/urls', templateVars)
-})
+  res.redirect('/urls', templateVars);
+});
 
 app.post('/urls', (req, res) => {
   const randomStr = generateRandomString(6);
   urlDatabase[randomStr] = req.body.longURL;
   console.log(urlDatabase);
-  res.redirect(`/urls/${randomStr}`)
-})
+  res.redirect(`/urls/${randomStr}`);
+});
 
 app.get('/urls/new', (req, res) => {
   let templateVars = {
     username: req.cookies.username
-  }
+  };
   res.render('urls_new', templateVars);
-})
+});
 
 // DELETE
 app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls')
-})
+  res.redirect('/urls');
+});
 
 // LOGIN
 app.post('/login', (req, res) => {
@@ -82,10 +82,17 @@ app.post('/login', (req, res) => {
   console.log(req.body.username);
   res.cookie('username', req.body.username);
   res.redirect('/urls');
-})
+});
+
+// LOGOUT
+app.post('/logout', (req, res) => {
+  // clear username cookie
+  res.clearCookie('username');
+  res.redirect('/urls');
+});
 
 app.get('*', (req, res) => {
-  res.redirect('/urls')
+  res.redirect('/urls');
 });
 
 // app.get('/hello', (req, res) => {

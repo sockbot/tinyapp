@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateRandomString, emailExists, getUserObj } = require('./helperFunctions.js');
+const { generateRandomString, getUseridFromEmail, getUserObj } = require('./helperFunctions.js');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -90,16 +90,26 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 // LOGIN
 app.post('/login', (req, res) => {
-  // set cookie "username" to req.body.username
-  console.log(req.body.username);
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  // lookup email address and check password
+  const userid = getUseridFromEmail(users, req.body.email);
+  if (userid && (users[userid].password === req.body.password) ) {
+    res.cookie('user_id', userid);
+    res.redirect('/urls');
+  } else {
+    res.sendStatus(403);
+  }
 });
+
+app.get('/login', (req, res) => {
+  let templateVars = {}
+  templateVars.user = getUserObj(users, req.cookies.user_id)
+  res.render('login.ejs', templateVars);
+})
 
 // LOGOUT
 app.post('/logout', (req, res) => {
   // clear username cookie
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
@@ -107,7 +117,7 @@ app.post('/logout', (req, res) => {
 app.get('/register', (req, res) => {
   let templateVars = {}
   templateVars.user = getUserObj(users, req.cookies.user_id)
-  res.render('login.ejs', templateVars)
+  res.render('register.ejs', templateVars)
 })
 
 app.post('/register', (req, res) => {
@@ -115,7 +125,7 @@ app.post('/register', (req, res) => {
   const { email, password } = req.body;
   if (email === '' || password === '') {
     res.sendStatus(404);
-  } else if (emailExists(users, email)) {
+  } else if (getUseridFromEmail(users, email)) {
     res.sendStatus(400);
   } else {
     users[id] = { id, email, password };

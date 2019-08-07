@@ -7,14 +7,14 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-  <title>Login - TinyApp Example</title>
+  <title>Register New User - TinyApp Example</title>
 </head>
 <header>
   <% include ./partials/_header.ejs %>
 </header>
 <body>
-  <form action="/login" method="POST">
-    <h1>Login</h1>
+  <form action="/register" method="POST">
+    <h1>Register New Account</h1>
     <div>
       <label name="email">Email</label>
       <input type="email" name="email">
@@ -23,7 +23,7 @@
       <label name="password">Password</label>
       <input type="password" name="password">
     </div>
-    <button type="submit">Login</button>
+    <button type="submit">Register New Account</button>
   </form>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

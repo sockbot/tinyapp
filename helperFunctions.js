@@ -15,11 +15,11 @@ const generateRandomString = function (numChars) {
 //   i++;
 // }
 
-const emailExists = function (usersObj, email) {
+const getUseridFromEmail = function (usersObj, email) {
   for (userid in usersObj) {
     // console.log(usersObj[userid].email);
     if (usersObj[userid].email == email) {
-      return true;
+      return userid;
     }
   }
   return false;
@@ -51,4 +51,4 @@ const getUserObj = function (usersObj, userid) {
   };
 }
 
-module.exports = { generateRandomString, emailExists, getUserObj };
+module.exports = { generateRandomString, getUseridFromEmail, getUserObj };

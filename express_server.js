@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateRandomString, emailExists } = require('./helperFunctions.js');
+const { generateRandomString, emailExists, getUserObj } = require('./helperFunctions.js');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -10,10 +10,6 @@ app.use(bodyParser.urlencoded({ extender: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-
-let templateVars = {
-  
-};
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -43,10 +39,9 @@ app.get('/u/:shortURL', (req, res) => {
 
 // ADD
 app.get('/urls/new', (req, res) => {
-  let templateVars = {
-    username: req.cookies.username,
-    // shortURL: generateRandomString(6)
-  };
+  let templateVars = {};
+  templateVars.user = getUserObj(users, req.cookies.user_id)
+  console.log(templateVars)
   res.render('urls_new', templateVars);
 });
 
@@ -54,8 +49,9 @@ app.get('/urls/:shortURL', (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies.username
+    // username: req.cookies.username
   };
+  templateVars.user = getUserObj(users, req.cookies.user_id)
   res.render('urls_show', templateVars);
 });
 
@@ -67,8 +63,9 @@ app.get('/urls.json', (req, res) => {
 app.get('/urls', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies.username
+    // username: req.cookies.username
   };
+  templateVars.user = getUserObj(users, req.cookies.user_id)
   res.render('urls_index.ejs', templateVars);
 });
 
@@ -108,9 +105,8 @@ app.post('/logout', (req, res) => {
 
 // REGISTER
 app.get('/register', (req, res) => {
-  let templateVars = {
-    username: ''
-  }
+  let templateVars = {}
+  templateVars.user = getUserObj(users, req.cookies.user_id)
   res.render('login.ejs', templateVars)
 })
 

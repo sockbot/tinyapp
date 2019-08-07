@@ -9,7 +9,6 @@ const generateRandomString = function (numChars) {
   // console.log(randomStr);
   return randomStr;
 }
-
 // let i = 0;
 // while (i < 100) {
 //   generateRandomString(6);
@@ -25,7 +24,6 @@ const emailExists = function (usersObj, email) {
   }
   return false;
 }
-
 // const users = {
 //   "userRandomID": {
 //     id: "userRandomID",
@@ -38,8 +36,19 @@ const emailExists = function (usersObj, email) {
 //     password: "dishwasher-funk"
 //   }
 // }
-
 // console.log(emailExists(users, 'user2@example.com') === true);
 // console.log(emailExists(users, 'dfkdjsfk@kdfldkj.com') === false);
 
-module.exports = { generateRandomString, emailExists };
+const getUserObj = function (usersObj, userid) {
+  const user = {};
+  if (usersObj[userid]) {
+    return usersObj[userid];
+  } 
+  return { 
+    id: '', 
+    email: '',
+    password: '',
+  };
+}
+
+module.exports = { generateRandomString, emailExists, getUserObj };

@@ -21,6 +21,19 @@ const urlDatabase = {
   'aj38di': 'http://www.sockbot.com'
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
 // READ
 app.get('/u/:shortURL', (req, res) => {
   // console.log(req.params);
@@ -93,11 +106,21 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 });
 
+// REGISTER
 app.get('/register', (req, res) => {
   let templateVars = {
     username: ''
   }
   res.render('login.ejs', templateVars)
+})
+
+app.post('/register', (req, res) => {
+  const id = generateRandomString(10);
+  const { email, password } = req.body;
+  users[id] = { id, email, password };
+  res.cookie('user_id', id)
+  console.log(users)
+  res.redirect('/urls');  
 })
 
 app.get('*', (req, res) => {

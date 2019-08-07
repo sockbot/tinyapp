@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateRandomString } = require('./generateRandomString');
+const { generateRandomString, emailExists } = require('./helperFunctions.js');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -117,10 +117,16 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   const id = generateRandomString(10);
   const { email, password } = req.body;
-  users[id] = { id, email, password };
-  res.cookie('user_id', id)
-  console.log(users)
-  res.redirect('/urls');  
+  if (email === '' || password === '') {
+    res.sendStatus(404);
+  } else if (emailExists(users, email)) {
+    res.sendStatus(400);
+  } else {
+    users[id] = { id, email, password };
+    res.cookie('user_id', id)
+    console.log(users)
+    res.redirect('/urls');  
+  }
 })
 
 app.get('*', (req, res) => {

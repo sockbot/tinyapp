@@ -1,4 +1,4 @@
-const generateRandomString = function (numChars) {
+const generateRandomString = function(numChars) {
   const allowedChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
   let randomStr = '';
   for (let i = 0; i < numChars; i++) {
@@ -8,22 +8,22 @@ const generateRandomString = function (numChars) {
   }
   // console.log(randomStr);
   return randomStr;
-}
+};
 // let i = 0;
 // while (i < 100) {
 //   generateRandomString(6);
 //   i++;
 // }
 
-const getUseridFromEmail = function (usersObj, email) {
-  for (userid in usersObj) {
+const getUseridFromEmail = function(usersObj, email) {
+  for (const userid in usersObj) {
     // console.log(usersObj[userid].email);
-    if (usersObj[userid].email == email) {
+    if (usersObj[userid].email === email) {
       return userid;
     }
   }
   return false;
-}
+};
 // const users = {
 //   "userRandomID": {
 //     id: "userRandomID",
@@ -39,16 +39,15 @@ const getUseridFromEmail = function (usersObj, email) {
 // console.log(emailExists(users, 'user2@example.com') === true);
 // console.log(emailExists(users, 'dfkdjsfk@kdfldkj.com') === false);
 
-const getUserObj = function (usersObj, userid) {
-  const user = {};
+const getUserObj = function(usersObj, userid) {
   if (usersObj[userid]) {
     return usersObj[userid];
-  } 
-  return { 
-    id: '', 
+  }
+  return {
+    id: '',
     email: '',
     password: '',
   };
-}
+};
 
 module.exports = { generateRandomString, getUseridFromEmail, getUserObj };

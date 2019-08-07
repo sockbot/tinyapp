@@ -28,7 +28,7 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
 
 // READ
 app.get('/u/:shortURL', (req, res) => {
@@ -40,8 +40,8 @@ app.get('/u/:shortURL', (req, res) => {
 // ADD
 app.get('/urls/new', (req, res) => {
   let templateVars = {};
-  templateVars.user = getUserObj(users, req.cookies.user_id)
-  console.log(templateVars)
+  templateVars.user = getUserObj(users, req.cookies.user_id);
+  console.log(templateVars);
   res.render('urls_new', templateVars);
 });
 
@@ -49,9 +49,8 @@ app.get('/urls/:shortURL', (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    // username: req.cookies.username
   };
-  templateVars.user = getUserObj(users, req.cookies.user_id)
+  templateVars.user = getUserObj(users, req.cookies.user_id);
   res.render('urls_show', templateVars);
 });
 
@@ -63,9 +62,8 @@ app.get('/urls.json', (req, res) => {
 app.get('/urls', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    // username: req.cookies.username
   };
-  templateVars.user = getUserObj(users, req.cookies.user_id)
+  templateVars.user = getUserObj(users, req.cookies.user_id);
   res.render('urls_index.ejs', templateVars);
 });
 
@@ -92,7 +90,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.post('/login', (req, res) => {
   // lookup email address and check password
   const userid = getUseridFromEmail(users, req.body.email);
-  if (userid && (users[userid].password === req.body.password) ) {
+  if (userid && (users[userid].password === req.body.password)) {
     res.cookie('user_id', userid);
     res.redirect('/urls');
   } else {
@@ -101,24 +99,24 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  let templateVars = {}
-  templateVars.user = getUserObj(users, req.cookies.user_id)
+  let templateVars = {};
+  templateVars.user = getUserObj(users, req.cookies.user_id);
   res.render('login.ejs', templateVars);
-})
+});
 
 // LOGOUT
 app.post('/logout', (req, res) => {
-  // clear username cookie
+  // clear login cookie
   res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
 // REGISTER
 app.get('/register', (req, res) => {
-  let templateVars = {}
-  templateVars.user = getUserObj(users, req.cookies.user_id)
-  res.render('register.ejs', templateVars)
-})
+  let templateVars = {};
+  templateVars.user = getUserObj(users, req.cookies.user_id);
+  res.render('register.ejs', templateVars);
+});
 
 app.post('/register', (req, res) => {
   const id = generateRandomString(10);
@@ -129,11 +127,11 @@ app.post('/register', (req, res) => {
     res.sendStatus(400);
   } else {
     users[id] = { id, email, password };
-    res.cookie('user_id', id)
-    console.log(users)
-    res.redirect('/urls');  
+    res.cookie('user_id', id);
+    console.log(users);
+    res.redirect('/urls');
   }
-})
+});
 
 app.get('*', (req, res) => {
   res.redirect('/urls');

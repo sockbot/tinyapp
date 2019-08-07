@@ -28,6 +28,15 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(longURL);
 });
 
+// ADD
+app.get('/urls/new', (req, res) => {
+  let templateVars = {
+    username: req.cookies.username,
+    // shortURL: generateRandomString(6)
+  };
+  res.render('urls_new', templateVars);
+});
+
 app.get('/urls/:shortURL', (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
@@ -50,10 +59,10 @@ app.get('/urls', (req, res) => {
   res.render('urls_index.ejs', templateVars);
 });
 
-// ADD
+
 app.post('/urls/:shortURL', (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
-  res.redirect('/urls', templateVars);
+  res.redirect('/urls');
 });
 
 app.post('/urls', (req, res) => {
@@ -61,13 +70,6 @@ app.post('/urls', (req, res) => {
   urlDatabase[randomStr] = req.body.longURL;
   console.log(urlDatabase);
   res.redirect(`/urls/${randomStr}`);
-});
-
-app.get('/urls/new', (req, res) => {
-  let templateVars = {
-    username: req.cookies.username
-  };
-  res.render('urls_new', templateVars);
 });
 
 // DELETE
@@ -90,6 +92,13 @@ app.post('/logout', (req, res) => {
   res.clearCookie('username');
   res.redirect('/urls');
 });
+
+app.get('/register', (req, res) => {
+  let templateVars = {
+    username: ''
+  }
+  res.render('login.ejs', templateVars)
+})
 
 app.get('*', (req, res) => {
   res.redirect('/urls');

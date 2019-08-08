@@ -11,11 +11,6 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
-// const urlDatabase = {
-//   'b2xVn2': 'http://www.lighthouselabs.ca',
-//   '9sm5xK': 'http://www.google.com',
-//   'aj38di': 'http://www.sockbot.com'
-// };
 const urlDatabase = {
   'b2xVn2': { longURL: 'http://www.lighthouselabs.ca', user_id: "userRandomID" },
   '9sm5xK': { longURL: 'http://www.google.com', user_id: "user2RandomID" },
@@ -50,19 +45,25 @@ app.get('/urls/new', (req, res) => {
   if (isLoggedIn(users, req.cookies.user_id)) {
     return res.render('urls_new', templateVars);
   }
-  res.redirect('/login')
+  res.redirect('/login');
 });
 
+// render individual short url edit page
 app.get('/urls/:shortURL', (req, res) => {
-  if (isLoggedIn(users, req.cookies.user_id)){
+  const shortURL = req.params.shortURL;
+  const userid = req.cookies.user_id;
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404).send('Short URL not found');
+  } else if (isLoggedIn(users, userid) && (urlDatabase[shortURL].user_id === userid)) {
     let templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL],
+      shortURL: shortURL,
+      longURL: urlDatabase[shortURL].longURL,
     };
     templateVars.user = getUserObj(users, req.cookies.user_id);
     return res.render('urls_show', templateVars);
   }
-  res.redirect('/login')
+  // res.status(400).send('hello world');
+  res.redirect(403, '/login');
 });
 
 app.get('/urls.json', (req, res) => {
@@ -82,12 +83,13 @@ app.get('/urls', (req, res) => {
   res.redirect('/login');
 });
 
-
+// edit existing URL
 app.post('/urls/:shortURL', (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
 
+// create new URL
 app.post('/urls', (req, res) => {
   const randomStr = generateRandomString(6);
   urlDatabase[randomStr] = req.body.longURL;
@@ -113,6 +115,7 @@ app.post('/login', (req, res) => {
   }
 });
 
+// render login page
 app.get('/login', (req, res) => {
   let templateVars = {};
   templateVars.user = getUserObj(users, req.cookies.user_id);
@@ -126,13 +129,14 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 });
 
-// REGISTER
+// render register page
 app.get('/register', (req, res) => {
   let templateVars = {};
   templateVars.user = getUserObj(users, req.cookies.user_id);
   res.render('register.ejs', templateVars);
 });
 
+// register new account
 app.post('/register', (req, res) => {
   const id = generateRandomString(10);
   const { email, password } = req.body;

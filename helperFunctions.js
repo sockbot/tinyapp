@@ -22,22 +22,8 @@ const getUseridFromEmail = function(usersObj, email) {
       return userid;
     }
   }
-  return false;
+  return undefined;
 };
-// const users = {
-//   "userRandomID": {
-//     id: "userRandomID",
-//     email: "user@example.com",
-//     password: "purple-monkey-dinosaur"
-//   },
-//   "user2RandomID": {
-//     id: "user2RandomID",
-//     email: "user2@example.com",
-//     password: "dishwasher-funk"
-//   }
-// }
-// console.log(emailExists(users, 'user2@example.com') === true);
-// console.log(emailExists(users, 'dfkdjsfk@kdfldkj.com') === false);
 
 const getUserObj = function(usersObj, userid) {
   if (usersObj[userid]) {

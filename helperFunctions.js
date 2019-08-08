@@ -50,4 +50,21 @@ const getUserObj = function(usersObj, userid) {
   };
 };
 
-module.exports = { generateRandomString, getUseridFromEmail, getUserObj };
+const isLoggedIn = function (users, userid) {
+  if (Object.keys(users).indexOf(userid) >= 0) {
+    return true;
+  }
+  return false;
+}
+
+const urlsForUser = function (urlids, id) {
+  let urls = {};
+  for (let urlid in urlids) {
+    if (urlids[urlid].user_id === id) {
+      urls[urlid] = urlids[urlid];
+    }
+  }
+  return urls;
+}
+
+module.exports = { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser };

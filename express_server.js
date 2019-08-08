@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateRandomString, getUseridFromEmail, getUserObj } = require('./helperFunctions.js');
+const { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser } = require('./helperFunctions.js');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -11,10 +11,14 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
+// const urlDatabase = {
+//   'b2xVn2': 'http://www.lighthouselabs.ca',
+//   '9sm5xK': 'http://www.google.com',
+//   'aj38di': 'http://www.sockbot.com'
+// };
 const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com',
-  'aj38di': 'http://www.sockbot.com'
+  'b2xVn2': { longURL: 'http://www.lighthouselabs.ca', user_id: "userRandomID" },
+  '9sm5xK': { longURL: 'http://www.google.com', user_id: "user2RandomID" },
 };
 
 const users = {
@@ -41,17 +45,24 @@ app.get('/u/:shortURL', (req, res) => {
 app.get('/urls/new', (req, res) => {
   let templateVars = {};
   templateVars.user = getUserObj(users, req.cookies.user_id);
-  console.log(templateVars);
-  res.render('urls_new', templateVars);
+  // console.log(req.cookies.user_id);
+  // console.log(Object.keys(users))
+  if (isLoggedIn(users, req.cookies.user_id)) {
+    return res.render('urls_new', templateVars);
+  }
+  res.redirect('/login')
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  let templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
-  };
-  templateVars.user = getUserObj(users, req.cookies.user_id);
-  res.render('urls_show', templateVars);
+  if (isLoggedIn(users, req.cookies.user_id)){
+    let templateVars = {
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL],
+    };
+    templateVars.user = getUserObj(users, req.cookies.user_id);
+    return res.render('urls_show', templateVars);
+  }
+  res.redirect('/login')
 });
 
 app.get('/urls.json', (req, res) => {
@@ -60,11 +71,15 @@ app.get('/urls.json', (req, res) => {
 
 // BROWSE
 app.get('/urls', (req, res) => {
-  let templateVars = {
-    urls: urlDatabase,
-  };
-  templateVars.user = getUserObj(users, req.cookies.user_id);
-  res.render('urls_index.ejs', templateVars);
+  if (isLoggedIn(users, req.cookies.user_id)) {
+    let templateVars = {
+      urls: urlsForUser(urlDatabase, req.cookies.user_id),
+    };
+    templateVars.user = getUserObj(users, req.cookies.user_id);
+    console.log(templateVars);
+    return res.render('urls_index.ejs', templateVars);
+  }
+  res.redirect('/login');
 });
 
 
@@ -134,11 +149,10 @@ app.post('/register', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.redirect('/urls');
+  res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
 
 // app.get('/hello', (req, res) => {
-//   res.send('<html><body>Hello <b>World</b></body></html>\n');
 // });
 
 // app.get("/set", (req, res) => {

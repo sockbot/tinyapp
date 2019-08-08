@@ -12,6 +12,7 @@ const PORT = 8080;
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({ extender: true }));
 app.use(morgan('dev'));
@@ -27,12 +28,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    hashedPassword: "$2b$10$jddq6u6YZDTS67Tb0QrZNe9IQS8lUuU75309oQ31lSGQGcbYYcOSi"
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    hashedPassword: "$2b$10$c0G9q2G7oBfzxEfx0Z0niOl1s/Cz/KHiULVIrx0Q7iq7U9vFt0qYS"
   }
 };
 
@@ -129,8 +130,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.post('/login', (req, res) => {
   // lookup email address and check password
   const userid = getUseridFromEmail(users, req.body.email);
-  if (userid && (users[userid].password === req.body.password)) {
-    res.cookie('user_id', userid);
+  // if (userid && (users[userid].hashedPassword === req.body.password)) {
+  console.log(bcrypt.hashSync(req.body.password, 10));
+  if (userid && (bcrypt.compareSync(req.body.password, users[userid].hashedPassword))) {
+  res.cookie('user_id', userid);
     res.redirect('/urls');
   } else {
     res.sendStatus(403);
@@ -161,13 +164,14 @@ app.get('/register', (req, res) => {
 // register new account
 app.post('/register', (req, res) => {
   const id = generateRandomString(10);
-  const { email, password } = req.body;
-  if (email === '' || password === '') {
+  const email = req.body.email;
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+  if (email === '' || hashedPassword === '') {
     res.sendStatus(404);
   } else if (getUseridFromEmail(users, email)) {
     res.sendStatus(400);
   } else {
-    users[id] = { id, email, password };
+    users[id] = { id, email, hashedPassword };
     res.cookie('user_id', id);
     console.log(users);
     res.redirect('/urls');

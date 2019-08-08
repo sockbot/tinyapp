@@ -1,5 +1,12 @@
 const express = require('express');
-const { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser } = require('./helperFunctions.js');
+const { 
+  generateRandomString, 
+  getUseridFromEmail, 
+  getUserObj, 
+  isLoggedIn, 
+  urlsForUser,
+  shortURLExists
+} = require('./helperFunctions.js');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -31,9 +38,12 @@ const users = {
 
 // READ
 app.get('/u/:shortURL', (req, res) => {
-  // console.log(req.params);
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+  const shortURL = req.params.shortURL;
+  if (shortURLExists(urlDatabase, shortURL)) {
+    const longURL = urlDatabase[shortURL].longURL;
+    return res.redirect(longURL);
+  }
+  res.redirect(404, '/login');
 });
 
 // ADD
@@ -85,22 +95,33 @@ app.get('/urls', (req, res) => {
 
 // edit existing URL
 app.post('/urls/:shortURL', (req, res) => {
-  urlDatabase[req.params.shortURL] = req.body.longURL;
+  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
 });
 
 // create new URL
 app.post('/urls', (req, res) => {
   const randomStr = generateRandomString(6);
-  urlDatabase[randomStr] = req.body.longURL;
-  console.log(urlDatabase);
+  urlDatabase[randomStr] = {
+    longURL: req.body.longURL,
+    user_id: req.cookies.user_id
+  }
+  // console.log(urlDatabase);
   res.redirect(`/urls/${randomStr}`);
 });
 
 // DELETE
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls');
+  const userId = req.cookies.user_id;
+  const shortURL = req.params.shortURL;
+  const userURLs = urlsForUser(urlDatabase, userId);
+  console.log(userURLs);
+  console.log(Object.keys(userURLs))
+  if (isLoggedIn(users, userId) && (Object.keys(userURLs).indexOf(shortURL)) >= 0) {
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  }
+  res.redirect(403, '/login')
 });
 
 // LOGIN
@@ -152,9 +173,9 @@ app.post('/register', (req, res) => {
   }
 });
 
-app.get('*', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
-});
+// app.get('*', (req, res) => {
+//   res.send('<html><body>Hello <b>World</b></body></html>\n');
+// });
 
 // app.get('/hello', (req, res) => {
 // });

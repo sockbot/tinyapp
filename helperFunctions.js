@@ -67,4 +67,8 @@ const urlsForUser = function(urlids, id) {
   return urls;
 };
 
-module.exports = { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser };
+const shortURLExists = function(urlids, shortURL) {
+  return Object.keys(urlids).indexOf(shortURL) >= 0;
+}
+
+module.exports = { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser, shortURLExists };

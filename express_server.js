@@ -115,12 +115,13 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   const userId = req.cookies.user_id;
   const shortURL = req.params.shortURL;
   const userURLs = urlsForUser(urlDatabase, userId);
-  console.log(userURLs);
-  console.log(Object.keys(userURLs))
+  console.log("Before:", urlDatabase);
   if (isLoggedIn(users, userId) && (Object.keys(userURLs).indexOf(shortURL)) >= 0) {
     delete urlDatabase[shortURL];
-    res.redirect('/urls');
+    console.log("After:", urlDatabase);
+    return res.redirect('/urls');
   }
+  console.log("After:", urlDatabase);
   res.redirect(403, '/login')
 });
 

@@ -4,8 +4,8 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["URLs index"](https://github.com/sockbot/tinyapp/blob/master/docs/AwesomeScreenshot-localhost-urls-2019-08-08_4_57.png?raw=true)
+!["Edit a short URL"](https://github.com/sockbot/tinyapp/blob/master/docs/AwesomeScreenshot-localhost-urls-I0J7As-2019-08-08_4_58.png?raw=true)
 
 ## Dependencies
 
@@ -19,4 +19,4 @@ TinyApp is a full stack web application built with Node and Express that allows 
 ## Getting Started
 
 - Install all dependencies (using the `npm install` command).
-- Run the development web server using the `node express_server.js` command.
+- Run the development web server using the `node express_server.js` command. The app will be available at http://localhost:8080.

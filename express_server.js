@@ -175,7 +175,7 @@ app.post('/logout', (req, res) => {
   // clear login cookie
   res.clearCookie('session');
   res.clearCookie('session.sig');
-  res.redirect('/urls');
+  res.redirect('/login');
 });
 
 // render register page

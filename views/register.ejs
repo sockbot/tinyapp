@@ -13,17 +13,19 @@
   <% include ./partials/_header.ejs %>
 </header>
 <body>
-  <form action="/register" method="POST">
-    <h1>Register New Account</h1>
-    <div>
-      <label name="email">Email</label>
-      <input type="email" name="email">
+  <form action="/register" method="POST" style="width: 300px; margin: 1em">
+    <h3>Register New Account</h3>
+    <div class="form-group">
+      <div class="form-group mb-2">
+        <label name="email">Email</label>
+        <input type="email" name="email" class="form-control" placeholder="email@address.com">
+      </div>
+      <div class="form-group mb-2">
+        <label name="password">Password</label>
+        <input type="password" name="password" class="form-control" >
+      </div>
+      <button type="submit" class="btn btn-primary">Register New Account</button>
     </div>
-    <div>
-      <label name="password">Password</label>
-      <input type="password" name="password">
-    </div>
-    <button type="submit">Register New Account</button>
   </form>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

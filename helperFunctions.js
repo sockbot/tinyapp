@@ -6,28 +6,21 @@ const generateRandomString = function(numChars) {
     const randomChar = allowedChars[randomNum];
     randomStr += randomChar;
   }
-  // console.log(randomStr);
   return randomStr;
 };
-// let i = 0;
-// while (i < 100) {
-//   generateRandomString(6);
-//   i++;
-// }
 
-const getUseridFromEmail = function(usersObj, email) {
-  for (const userid in usersObj) {
-    // console.log(usersObj[userid].email);
-    if (usersObj[userid].email === email) {
-      return userid;
+const getUserIdFromEmail = function(usersObj, email) {
+  for (const userId in usersObj) {
+    if (usersObj[userId].email === email) {
+      return userId;
     }
   }
   return undefined;
 };
 
-const getUserObj = function(usersObj, userid) {
-  if (usersObj[userid]) {
-    return usersObj[userid];
+const getUserObj = function(usersObj, userId) {
+  if (usersObj[userId]) {
+    return usersObj[userId];
   }
   return {
     id: '',
@@ -36,25 +29,25 @@ const getUserObj = function(usersObj, userid) {
   };
 };
 
-const isLoggedIn = function(users, userid) {
-  if (Object.keys(users).indexOf(userid) >= 0) {
+const isLoggedIn = function(users, userId) {
+  if (Object.keys(users).indexOf(userId) >= 0) {
     return true;
   }
   return false;
 };
 
-const urlsForUser = function(urlids, id) {
+const urlsForUser = function(urlIds, id) {
   let urls = {};
-  for (let urlid in urlids) {
-    if (urlids[urlid].user_id === id) {
-      urls[urlid] = urlids[urlid];
+  for (let urlId in urlIds) {
+    if (urlIds[urlId].user_id === id) {
+      urls[urlId] = urlIds[urlId];
     }
   }
   return urls;
 };
 
-const shortURLExists = function(urlids, shortURL) {
-  return Object.keys(urlids).indexOf(shortURL) >= 0;
+const shortURLExists = function(urlIds, shortURL) {
+  return Object.keys(urlIds).indexOf(shortURL) >= 0;
 }
 
-module.exports = { generateRandomString, getUseridFromEmail, getUserObj, isLoggedIn, urlsForUser, shortURLExists };
+module.exports = { generateRandomString, getUserIdFromEmail, getUserObj, isLoggedIn, urlsForUser, shortURLExists };

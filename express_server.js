@@ -1,7 +1,7 @@
 const express = require('express');
 const { 
   generateRandomString, 
-  getUseridFromEmail, 
+  getUserIdFromEmail, 
   getUserObj, 
   isLoggedIn, 
   urlsForUser,
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extender: true }));
 app.use(morgan('dev'));
 app.use(cookieSession({
   name: 'session',
-  secret: 'alksdglkasdjglasdjdlksjflksdjgh',
+  keys: ['lkdsfjlds','sdlkfjldskj','lsdkfjdl'],
   maxAge: 24 * 60 * 60 * 1000
 }));
 app.set('view engine', 'ejs');
@@ -130,7 +130,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 // Login
 app.post('/login', (req, res) => {
-  const userid = getUseridFromEmail(users, req.body.email);
+  const userid = getUserIdFromEmail(users, req.body.email);
   if (userid && (bcrypt.compareSync(req.body.password, users[userid].hashedPassword))) {
   req.session.user_id = userid;
     res.redirect('/urls');
@@ -173,12 +173,11 @@ app.post('/register', (req, res) => {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   if (email === '' || hashedPassword === '') {
     res.sendStatus(404);
-  } else if (getUseridFromEmail(users, email)) {
+  } else if (getUserIdFromEmail(users, email)) {
     res.sendStatus(400);
   } else {
     users[userid] = { userid, email, hashedPassword };
     req.session.user_id = userid
-    console.log(users);
     res.redirect('/urls');
   }
 });

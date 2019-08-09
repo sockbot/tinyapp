@@ -43,8 +43,8 @@ const users = {
 
 // Root redirect
 app.get('/', (req, res) => {
-  let userid = req.session.user_id;
-  if (isLoggedIn(users, userid)) {
+  let userId = req.session.user_id;
+  if (isLoggedIn(users, userId)) {
     return res.redirect('/urls');
   }
   return res.redirect('/login');
@@ -73,10 +73,10 @@ app.get('/urls/new', (req, res) => {
 // Render individual short URL edit page
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const userid = req.session.user_id;
+  const userId = req.session.user_id;
   if (urlDatabase[shortURL] === undefined) {
     res.status(404).send('Short URL not found');
-  } else if (isLoggedIn(users, userid) && (urlDatabase[shortURL].user_id === userid)) {
+  } else if (isLoggedIn(users, userId) && (urlDatabase[shortURL].user_id === userId)) {
     let templateVars = {
       shortURL: shortURL,
       longURL: urlDatabase[shortURL].longURL,
@@ -118,10 +118,10 @@ app.post('/urls', (req, res) => {
 
 // Delete URL
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const userid = req.session.user_id;
+  const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
-  const userURLs = urlsForUser(urlDatabase, userid);
-  if (isLoggedIn(users, userid) && (Object.keys(userURLs).indexOf(shortURL)) >= 0) {
+  const userURLs = urlsForUser(urlDatabase, userId);
+  if (isLoggedIn(users, userId) && (Object.keys(userURLs).indexOf(shortURL)) >= 0) {
     delete urlDatabase[shortURL];
     return res.redirect('/urls');
   }
@@ -130,9 +130,9 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 // Login
 app.post('/login', (req, res) => {
-  const userid = getUserIdFromEmail(users, req.body.email);
-  if (userid && (bcrypt.compareSync(req.body.password, users[userid].hashedPassword))) {
-  req.session.user_id = userid;
+  const userId = getUserIdFromEmail(users, req.body.email);
+  if (userId && (bcrypt.compareSync(req.body.password, users[userId].hashedPassword))) {
+  req.session.user_id = userId;
     res.redirect('/urls');
   } else {
     res.redirect(403, '/login');
@@ -168,7 +168,7 @@ app.get('/register', (req, res) => {
 
 // Register new account
 app.post('/register', (req, res) => {
-  const userid = generateRandomString(10);
+  const userId = generateRandomString(10);
   const email = req.body.email;
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   if (email === '' || hashedPassword === '') {
@@ -176,8 +176,8 @@ app.post('/register', (req, res) => {
   } else if (getUserIdFromEmail(users, email)) {
     res.sendStatus(400);
   } else {
-    users[userid] = { userid, email, hashedPassword };
-    req.session.user_id = userid
+    users[userId] = { userId, email, hashedPassword };
+    req.session.user_id = userId
     res.redirect('/urls');
   }
 });
